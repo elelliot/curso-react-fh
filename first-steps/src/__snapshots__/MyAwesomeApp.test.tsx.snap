@@ -1,0 +1,65 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MyAwesomeApp > Should match snapshot - screen 1`] = `
+<div
+  data-testid="div-app"
+>
+  <h1
+    data-testid="first-name-title"
+  >
+    ElBarto
+  </h1>
+  <h3>
+    Sinso
+  </h3>
+  <p
+    class="mi-clase-favorita"
+  >
+    Cyberpunk 2077, Nier: Automata, Resident Evil, Ryu Ga Gotoku
+  </p>
+  <p>
+    4
+  </p>
+  <h1>
+    Active
+  </h1>
+  <p
+    style="background-color: rgb(160, 157, 157); border-radius: 10px; padding: 10px;"
+  >
+    {"country":"Mexico","zipCode":"ABC-123"}
+  </p>
+</div>
+`;
+
+exports[`MyAwesomeApp > Should match snapshot 1`] = `
+<div>
+  <div
+    data-testid="div-app"
+  >
+    <h1
+      data-testid="first-name-title"
+    >
+      ElBarto
+    </h1>
+    <h3>
+      Sinso
+    </h3>
+    <p
+      class="mi-clase-favorita"
+    >
+      Cyberpunk 2077, Nier: Automata, Resident Evil, Ryu Ga Gotoku
+    </p>
+    <p>
+      4
+    </p>
+    <h1>
+      Active
+    </h1>
+    <p
+      style="background-color: rgb(160, 157, 157); border-radius: 10px; padding: 10px;"
+    >
+      {"country":"Mexico","zipCode":"ABC-123"}
+    </p>
+  </div>
+</div>
+`;

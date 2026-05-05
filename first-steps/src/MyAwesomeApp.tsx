@@ -28,18 +28,19 @@ const myStyles: CSSProperties = {
 // No difference from traditional `function` component to `arrow function` component
 export const MyAwesomeApp = () => {
   return (
-    <>
-      <h1>{name}</h1>
+    <div data-testid="div-app">
+      <h1 data-testid="first-name-title">{name}</h1>
       <h3>{lastName}</h3>
 
       {/* Los arrays se imprimen pegados, asi que mejor usemos el `join` */}
-      <p>{favoriteGames.join(", ")}</p>
+      <p className="mi-clase-favorita">{favoriteGames.join(", ")}</p>
+      <p>{2 + 2}</p>
 
       {/* Booleanos no se imprimen, a menos que lo convirtamos a string */}
-      <h2>{isActive ? "Active" : "Inactive"}</h2>
+      <h1>{isActive ? "Active" : "Inactive"}</h1>
 
       {/* Los objetos no se imprimen enteros, debemos usar el JSON.stringify por ejemplo */}
       <p style={myStyles}>{JSON.stringify(address)}</p>
-    </>
+    </div>
   );
 };
