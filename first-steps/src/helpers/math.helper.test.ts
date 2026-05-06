@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { add, multiply, substract } from "./math.helper";
+import { add, divide, multiply, substract } from "./math.helper";
 
 // `describe` groups tests, can be nested even tho is not that much used
 describe("add tests", () => {
@@ -53,5 +53,16 @@ describe("multiply tests", () => {
     const result = multiply(a, b);
 
     expect(result).toBe(0);
+  });
+});
+
+describe("divide tests", () => {
+  test("Should divide two positive numbers", () => {
+    const a = 2;
+    const b = 4;
+
+    const result = divide(a, b);
+
+    expect(result).toBe(a / b);
   });
 });
