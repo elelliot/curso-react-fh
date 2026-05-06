@@ -77,7 +77,6 @@ describe("ItemCounter test ", () => {
     const quantity = 2;
     const name = "Test Item";
     render(<ItemCounter name={name} quantity={quantity} />);
-    screen.debug();
 
     const itemText = screen.getByText(name);
 

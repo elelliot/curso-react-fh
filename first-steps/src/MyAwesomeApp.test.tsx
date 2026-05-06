@@ -33,14 +33,14 @@ describe("MyAwesomeApp", () => {
   test("Should render firstName and lastName -- screen", () => {
     render(<MyAwesomeApp />); // Renderizamos
 
-    screen.debug(); // Aqui podriamos capturar actualizaciones en el DOM
+    // screen.debug(); // Aqui podriamos capturar actualizaciones en el DOM
 
     // Podemos buscar elementos con `screen` si no queremos usar el container
     // const h1 = screen.getByRole("heading", { level: 1 }); // level-> 1 seria busca los `h1`, si hay duplicados tira error
 
     // * Tambien podemos buscar por data-[testid] en el elemento (no es muy recomendado hacer lo del testId, pero a veces saca del apuro, pero la idea es no usarla para tener el HTML mas limpio por que si lo borran, fallan los test pero la app no y es dificil debuggear eso)
     const h1 = screen.getByTestId("first-name-title");
-    console.log(h1.innerHTML);
+    expect(h1.innerHTML).toBe("ElBarto");
   });
 
   test("Should match snapshot", () => {
