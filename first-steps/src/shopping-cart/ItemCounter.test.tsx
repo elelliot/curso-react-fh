@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import { ItemCounter } from "./ItemCounter";
 
-describe(" ItemCounter test ", () => {
+describe("ItemCounter test ", () => {
   test("Should render with default values", () => {
     const name = "Test Item";
     render(<ItemCounter name={name} />);
