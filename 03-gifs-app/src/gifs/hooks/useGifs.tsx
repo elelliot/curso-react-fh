@@ -64,7 +64,6 @@ export const useGifs = () => {
 
     // Guardamos el cache
     gifsCache.current[term] = gifs;
-    console.log(gifsCache);
   };
 
   return {
