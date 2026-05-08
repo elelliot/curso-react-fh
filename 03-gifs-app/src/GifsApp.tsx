@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { GifList } from "./gifs/components/GifList";
 import { PreviousSearches } from "./gifs/components/PreviousSearches";
-import { mockGifs } from "./mock-data/gifs.mock";
 import { CustomHeader } from "./shared/components/CustomHeader";
 import { SearchBar } from "./shared/components/SearchBar";
+import { getGifsByQuery } from "./gifs/actions/get-gifs-by-query.action";
+import type { Gif } from "./gifs/interfaces/gif.interface";
 
 export const GifsApp = () => {
-  const [previousTerms, setPreviousTerms] = useState(["cyberpunk2077"]);
+  const [gifs, setGifs] = useState<Gif[]>([]);
+  const [previousTerms, setPreviousTerms] = useState<string[]>([]);
 
   const handleTermClicked = (term: string) => {
     console.log({ term });
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     // Remove whitespaces on start and end, and go lowercase
     const term = query.trim().toLowerCase();
     // Query shouldn't be empty (first step helps for this)
@@ -26,7 +28,11 @@ export const GifsApp = () => {
       prevItems = [term, ...prevItems];
       return prevItems.slice(0, 8);
     });
+
+    const gifs = await getGifsByQuery(query);
+    setGifs(gifs);
   };
+
   return (
     <>
       {/* Header */}
@@ -46,7 +52,7 @@ export const GifsApp = () => {
       />
 
       {/* Gifs */}
-      <GifList gifs={mockGifs} />
+      <GifList gifs={gifs} />
     </>
   );
 };
