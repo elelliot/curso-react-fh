@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 
 import { Plus, Trash2, Check } from "lucide-react";
 
@@ -18,19 +18,38 @@ export const TasksApp = () => {
   const [inputValue, setInputValue] = useState("");
 
   const addTodo = () => {
-    console.log("Agregar tarea", inputValue);
+    if (inputValue.length === 0) return;
+    const newTodo: Todo = {
+      id: Date.now(),
+      text: inputValue.trim(),
+      completed: false,
+    };
+
+    setTodos([...todos, newTodo]);
+    // setTodos((prev)=> [...prev, newTodo])
+    setInputValue("");
   };
 
   const toggleTodo = (id: number) => {
-    console.log("Cambiar de true a false", id);
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, completed: !todo.completed };
+      }
+      return todo;
+    });
+
+    setTodos(updatedTodos);
   };
 
   const deleteTodo = (id: number) => {
-    console.log("Eliminar tarea", id);
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    console.log("Presiono enter");
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      addTodo();
+    }
   };
 
   const completedCount = todos.filter((todo) => todo.completed).length;
