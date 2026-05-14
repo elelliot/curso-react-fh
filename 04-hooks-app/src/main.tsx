@@ -1,10 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { TasksApp } from "./05-useReducer/TaskApp";
+import { ScrambleWords } from "./05-useReducer/ScrambleWords";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TasksApp />
+    <ScrambleWords />
   </StrictMode>,
 );
