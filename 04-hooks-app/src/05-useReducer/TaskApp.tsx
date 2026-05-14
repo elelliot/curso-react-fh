@@ -1,4 +1,4 @@
-import { useReducer, useState, type KeyboardEvent } from "react";
+import { useEffect, useReducer, useState, type KeyboardEvent } from "react";
 
 import { Plus, Trash2, Check } from "lucide-react";
 
@@ -11,6 +11,11 @@ import { getTasksInitialState, taskReducer } from "./reducer/tasksReducer";
 export const TasksApp = () => {
   const [state, dispatch] = useReducer(taskReducer, getTasksInitialState()); // Debemos mandar el reducer y el initialState
   const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    // Cada que cambie el state, guardamos a localStorage
+    localStorage.setItem("tasks-state", JSON.stringify(state));
+  }, [state]);
 
   const addTodo = () => {
     if (inputValue.length === 0) return;

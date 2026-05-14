@@ -19,14 +19,21 @@ export type TaskAction =
   | { type: "TOGGLE_TODO"; payload: number }
   | { type: "DELETE_TODO"; payload: number };
 
-// Estado inicial
+// Estado inicial (lo obtenemos de local storage o lo creamos de 0)
 export const getTasksInitialState = (): TaskState => {
-  return {
-    todos: [],
-    completed: 0,
-    pending: 0,
-    length: 0,
-  };
+  const localStorageState = localStorage.getItem("tasks-state");
+
+  if (!localStorageState) {
+    return {
+      todos: [],
+      completed: 0,
+      pending: 0,
+      length: 0,
+    };
+  }
+
+  // Esto puede haber sido manipulado desde el browser
+  return JSON.parse(localStorageState);
 };
 
 // NOTE: Reducer es una funcion que resuelve un nuevo state basado en los argumentos. Es un patron agnostico del framework o lenguaje
