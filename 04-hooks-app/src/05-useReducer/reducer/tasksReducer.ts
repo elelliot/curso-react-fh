@@ -1,3 +1,5 @@
+import { object, string, boolean, number, array } from "zod";
+
 interface Todo {
   id: number;
   text: string;
@@ -19,21 +21,44 @@ export type TaskAction =
   | { type: "TOGGLE_TODO"; payload: number }
   | { type: "DELETE_TODO"; payload: number };
 
+// Schemas de Todo y TaskState
+const TodoSchema = object({
+  id: number(),
+  text: string(),
+  completed: boolean(),
+});
+
+const TaskStateSchema = object({
+  todos: array(TodoSchema),
+  length: number(),
+  completed: number(),
+  pending: number(),
+});
+
 // Estado inicial (lo obtenemos de local storage o lo creamos de 0)
 export const getTasksInitialState = (): TaskState => {
   const localStorageState = localStorage.getItem("tasks-state");
 
+  const initialStateVanilla = {
+    todos: [],
+    completed: 0,
+    pending: 0,
+    length: 0,
+  };
+
   if (!localStorageState) {
-    return {
-      todos: [],
-      completed: 0,
-      pending: 0,
-      length: 0,
-    };
+    return initialStateVanilla;
   }
 
-  // Esto puede haber sido manipulado desde el browser
-  return JSON.parse(localStorageState);
+  // Validamos con Zod Schemas (Si por ejemlo alteran el Task del local storage a un tipo de dato no reconocido, entonces reset a vanilla state)
+  const result = TaskStateSchema.safeParse(JSON.parse(localStorageState));
+  if (result.error) {
+    return initialStateVanilla;
+  }
+
+  // Si la data pasa la validacion entonces la retornamos
+  return result.data;
+  // return JSON.parse(localStorageState);
 };
 
 // NOTE: Reducer es una funcion que resuelve un nuevo state basado en los argumentos. Es un patron agnostico del framework o lenguaje
