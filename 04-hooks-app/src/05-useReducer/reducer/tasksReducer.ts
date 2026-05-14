@@ -19,6 +19,16 @@ export type TaskAction =
   | { type: "TOGGLE_TODO"; payload: number }
   | { type: "DELETE_TODO"; payload: number };
 
+// Estado inicial
+export const getTasksInitialState = (): TaskState => {
+  return {
+    todos: [],
+    completed: 0,
+    pending: 0,
+    length: 0,
+  };
+};
+
 // NOTE: Reducer es una funcion que resuelve un nuevo state basado en los argumentos. Es un patron agnostico del framework o lenguaje
 export const taskReducer = (
   state: TaskState,

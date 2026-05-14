@@ -1,4 +1,4 @@
-import { useReducer, useState, type KeyboardEvent } from "react";
+import { useState, type KeyboardEvent } from "react";
 
 import { Plus, Trash2, Check } from "lucide-react";
 
@@ -6,25 +6,44 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getTasksInitialState, taskReducer } from "./reducer/tasksReducer";
+
+interface Todo {
+  id: number;
+  text: string;
+  completed: boolean;
+}
 
 export const TasksApp = () => {
-  const [state, dispatch] = useReducer(taskReducer, getTasksInitialState()); // Debemos mandar el reducer y el initialState
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState("");
 
   const addTodo = () => {
     if (inputValue.length === 0) return;
-    // Redujimos bastante gracias al reducer
-    dispatch({ type: "ADD_TODO", payload: inputValue });
+    const newTodo: Todo = {
+      id: Date.now(),
+      text: inputValue.trim(),
+      completed: false,
+    };
+
+    setTodos([...todos, newTodo]);
+    // setTodos((prev)=> [...prev, newTodo])
     setInputValue("");
   };
 
   const toggleTodo = (id: number) => {
-    dispatch({ type: "TOGGLE_TODO", payload: id });
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, completed: !todo.completed };
+      }
+      return todo;
+    });
+
+    setTodos(updatedTodos);
   };
 
   const deleteTodo = (id: number) => {
-    dispatch({ type: "DELETE_TODO", payload: id });
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
   };
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -33,7 +52,8 @@ export const TasksApp = () => {
     }
   };
 
-  const { todos, completed: completedCount, length: totalCount } = state;
+  const completedCount = todos.filter((todo) => todo.completed).length;
+  const totalCount = todos.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
