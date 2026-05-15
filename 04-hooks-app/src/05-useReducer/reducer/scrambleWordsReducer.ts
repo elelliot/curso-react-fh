@@ -69,6 +69,9 @@ export const getInitialState = (): ScrambleWordsState => {
   };
 };
 
+/* NOTE: Los reducers deben ser puros, solo debe depender de las entradas (estado y accion).
+si queremos hacer algo en base a un cambio de state (por ejemplo el confetti), eso hay que hacerlo fuera del reducer por ejemplo con useEffect 
+*/
 export const scrambleWordsReducer = (
   state: ScrambleWordsState,
   action: ScrambleWordsAction,
