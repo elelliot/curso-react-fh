@@ -1,56 +1,122 @@
-import { useEffect, useReducer, type SubmitEvent } from "react";
-import confetti from "canvas-confetti";
-import { SkipForward, Play } from "lucide-react";
+import { useState, type SubmitEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  getInitialState,
-  scrambleWordsReducer,
-} from "./reducer/scrambleWordsReducer";
+import { SkipForward, Play } from "lucide-react";
+import confetti from "canvas-confetti";
+
+const GAME_WORDS = [
+  "REACT",
+  "JAVASCRIPT",
+  "TYPESCRIPT",
+  "HTML",
+  "ANGULAR",
+  "SOLID",
+  "NODE",
+  "VUEJS",
+  "SVELTE",
+  "EXPRESS",
+  "MONGODB",
+  "POSTGRES",
+  "DOCKER",
+  "KUBERNETES",
+  "WEBPACK",
+  "VITE",
+  "TAILWIND",
+];
+
+// Esta función mezcla el arreglo para que siempre sea aleatorio
+const shuffleArray = (array: string[]) => {
+  return array.sort(() => Math.random() - 0.5);
+};
+
+// Esta función mezcla las letras de la palabra
+const scrambleWord = (word: string = "") => {
+  return word
+    .split("")
+    .sort(() => Math.random() - 0.5)
+    .join("");
+};
 
 export const ScrambleWords = () => {
-  const [state, dispatch] = useReducer(scrambleWordsReducer, getInitialState());
+  const [words, setWords] = useState(shuffleArray(GAME_WORDS)); // Todas las palabras a adivinar
 
-  const {
-    words,
-    currentWord,
-    errorCounter,
-    guess,
-    isGameOver,
-    maxAllowErrors,
-    maxSkips,
-    points,
-    scrambledWord,
-    skipCounter,
-    totalWords,
-  } = state;
+  const [currentWord, setCurrentWord] = useState(words[0]); // Current Word to Guess
+  const [scrambledWord, setScrambledWord] = useState(scrambleWord(currentWord)); // Scrambled word to display as the clue
+  const [guess, setGuess] = useState(""); // User input guess
+  const [points, setPoints] = useState(0); // User current points
+  const [errorCounter, setErrorCounter] = useState(0);
+  const [maxAllowErrors] = useState(3);
 
-  useEffect(() => {
-    if (points === 0) return;
-    confetti({ particleCount: 100, spread: 120 }); //Como la funcion esta fuera del componente, no hay que memorizarla ni ponerla en un array
-  }, [points]);
+  const [skipCounter, setSkipCounter] = useState(0);
+  const [maxSkips] = useState(3);
+
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const handleGuessSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     // Previene el refresh de la página
     e.preventDefault();
 
-    dispatch({
-      type: "CHECK_ANSWER",
-    });
+    // Comparamos...
+    // Correcto
+    const isCorrectWord = guess === currentWord;
+    if (isCorrectWord) {
+      confetti({ particleCount: 100, spread: 120 });
+
+      // Aumentamos +1 punto
+      setPoints((prevState) => prevState + 1);
+
+      // Remove current word from `words` since we passed it.
+      const newWords = words.slice(1); // Quitamos la current, que seria la primera
+      setWords(newWords);
+
+      // Aqui hacemos lo de los effect...
+      setCurrentWord(newWords[0]); // New current word after we slice the array
+      setScrambledWord(scrambleWord(newWords[0])); // New scrambled word...
+
+      // Reset Input
+      setGuess("");
+      return;
+    }
+
+    // Incorrecto
+
+    // Error + 1
+    setErrorCounter((prevErrorCounter) => prevErrorCounter + 1);
+    // Reset Input
+    setGuess("");
+
+    if (errorCounter + 1 >= maxAllowErrors) {
+      setIsGameOver(true);
+    }
   };
 
   const handleSkip = () => {
-    dispatch({
-      type: "SKIP_WORD",
-    });
+    // If we dont have skips
+    if (skipCounter >= maxSkips) return;
+
+    setSkipCounter((prevSkipCounter) => prevSkipCounter + 1); // Skip counter + 1
+
+    const updatedWords = words.slice(1); // Remove the skipped word from `words`
+    setWords(updatedWords); // Updates Words
+
+    // NOTE: the following updates are like this because if we use the new `words` value after the `setWords`, the state won't sync correctly because of how react works updating the state, so we update the new states like this (without depending on the updated `words` state)
+    setCurrentWord(updatedWords[0]); // Set current word with the new value
+    setScrambledWord(scrambleWord(updatedWords[0])); // Also set the new scrambled word with the new value
+    setGuess("");
   };
 
   const handlePlayAgain = () => {
-    dispatch({
-      type: "START_NEW_GAME",
-      payload: getInitialState(),
-    });
+    const newArray = shuffleArray(GAME_WORDS);
+    // Reset Input and counters
+    setGuess("");
+    setErrorCounter(0);
+    setPoints(0);
+    setSkipCounter(0);
+    setWords(newArray);
+    setCurrentWord(newArray[0]);
+    setScrambledWord(scrambleWord(newArray[0]));
+    setIsGameOver(false);
   };
 
   //! Si ya no hay palabras para jugar, se muestra el mensaje de fin de juego
@@ -130,14 +196,8 @@ export const ScrambleWords = () => {
                     id="guess"
                     type="text"
                     value={guess}
-                    onChange={
-                      (e) => {
-                        dispatch({
-                          type: "SET_GUESS",
-                          payload: e.target.value,
-                        });
-                      }
-                      // setGuess(e.target.value.toUpperCase().trim())
+                    onChange={(e) =>
+                      setGuess(e.target.value.toUpperCase().trim())
                     }
                     placeholder="Ingresa tu palabra..."
                     className="text-center text-lg font-semibold h-12 border-2 border-indigo-200 focus:border-indigo-500 transition-colors"
@@ -159,7 +219,7 @@ export const ScrambleWords = () => {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 text-center border border-green-200">
                 <div className="text-2xl font-bold text-green-600">
-                  {points} / {totalWords}
+                  {points} / {GAME_WORDS.length}
                 </div>
                 <div className="text-sm text-green-700 font-medium">Puntos</div>
               </div>
