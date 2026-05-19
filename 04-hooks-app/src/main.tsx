@@ -1,10 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { MemoCounter } from "./06-memos/MemoCounter";
+import { InstagromApp } from "./07-useOptimistic/InstagromApp";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <MemoCounter />
+    <InstagromApp />
   </StrictMode>,
 );
