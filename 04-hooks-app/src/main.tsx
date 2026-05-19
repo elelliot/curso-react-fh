@@ -1,10 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ScrambleWords } from "./05-useReducer/ScrambleWords";
+import { MemoHook } from "./06-memos/MemoHook";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ScrambleWords />
+    <MemoHook />
   </StrictMode>,
 );
