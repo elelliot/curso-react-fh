@@ -1,5 +1,5 @@
-import { useOptimistic, useState } from "react";
-
+import { useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
 interface Comment {
   id: number;
   text: string;
@@ -8,12 +8,16 @@ interface Comment {
 let lastId = 2;
 
 export const InstagromApp = () => {
+  /* Con useTransition, podemos aplicar un `isPending` cuando usemos el `action`
+  que nos devuelve el hook. Asi podemos controlar la UI */
+  const [isPending, startTransition] = useTransition();
+
   const [comments, setComments] = useState<Comment[]>([
     { id: 1, text: "¡Gran foto!" },
     { id: 2, text: "Me encanta 🧡" },
   ]);
 
-  /* NOTE: Sirve para aplicar updates en la UI a partir de un `state`. 
+  /* NOTE: Sirve para aplicar updates en la UI a partir de un `state` de forma optimista.
   Con esto asumimos que el server va dar una respuesta positiva. 
   En caso de fallar, podemos hacer un rollback hacia el state anterior.
 
@@ -48,23 +52,36 @@ export const InstagromApp = () => {
   const handleAddComment = async (formData: FormData) => {
     // Accedemos mediante la key para obtener el valor del campo
     const messageText = formData.get("post-message") as string; // Lo ideal es validar con Zod en vez de Castear por que el tipo es `FormDataEntryValue | null`
-    console.log(messageText);
 
     // Antes de llamar al server, suponemos que el server responde bien y actualizamos la UI
     addOptimisticComment(messageText);
 
-    // Simulamos http request
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // En cuanto actualizamos la UI hacemos el "request" y actualizamos el `state`
+    startTransition(async () => {
+      // Simulamos http request
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    console.log("Server answered");
+      //   Simular success
+      //   setComments((prev) => [
+      //     ...prev,
+      //     {
+      //       id: new Date().getTime(),
+      //       text: messageText, //Como no mandamos el optimistic, no se ve `enviando` ya que aqui es donde se actualiza la UI al final
+      //     },
+      //   ]);
 
-    setComments((prev) => [
-      ...prev,
-      {
-        id: new Date().getTime(),
-        text: messageText, //Como no mandamos el optimistic, no se ve `enviando` ya que aqui es donde se actualiza la UI al final
-      },
-    ]);
+      // Revert process
+      setComments((prev) => prev);
+      toast("Error al agregar comentario", {
+        description: "Intente nuevamente",
+        duration: 10000,
+        position: "top-right",
+        action: {
+          label: "Cerrar",
+          onClick: () => toast.dismiss(),
+        },
+      });
+    });
   };
 
   return (
@@ -82,7 +99,7 @@ export const InstagromApp = () => {
       </div>
 
       {/* Comentarios */}
-      <ul className="flex flex-col items-start justify-center bg-gray-300 w-[500px] p-4">
+      <ul className="flex flex-col items-start bg-gray-300 w-[500px] p-4">
         {/* {comments.map((comment) => ( */}
         {optimisticComments.map((comment) => (
           <li key={comment.id} className="flex items-center gap-2 mb-2">
@@ -111,8 +128,8 @@ export const InstagromApp = () => {
         />
         <button
           type="submit"
-          disabled={false}
-          className="bg-blue-500 text-white p-2 rounded-md w-full"
+          disabled={isPending}
+          className="bg-blue-500 text-white p-2 rounded-md w-full disabled:bg-blue-300"
         >
           Enviar
         </button>
