@@ -7,9 +7,15 @@ interface Comment {
 }
 let lastId = 2;
 
+/*
+1- Actualizamos el `state` de forma optimista (useOptimistic) asumiendo que el request sera un exito
+2- Con `useTransition` hariamos el HTTP request y con el `isPending` controlariamos el la UI
+`isPending` es `true` cuando el `action` esta ejecutandose
+*/
+
 export const InstagromApp = () => {
   /* Con useTransition, podemos aplicar un `isPending` cuando usemos el `action`
-  que nos devuelve el hook. Asi podemos controlar la UI */
+  que nos devuelve el hook. */
   const [isPending, startTransition] = useTransition();
 
   const [comments, setComments] = useState<Comment[]>([
@@ -30,11 +36,14 @@ export const InstagromApp = () => {
 
   Se desestructura como `useState` y funciona en esa parte igual
   
-  TLDR: Hacemos un optimistic UI update antes de llamar al server, y una vez se resuelva correctamente,
-  actualizamos el state
+  //* TLDR: Actualizamos la UI antes del HTTP request asumiendo que sera exitoso usando ambos `useOptimistic` 
+  para actualizar el `state` y `useTransition` con su `action` (startTransition) para 
+
   */
   const [optimisticComments, addOptimisticComment] = useOptimistic(
+    // El state optimista
     comments,
+    // Dispatcher para actualizar el `currentState` usando el valor que le enviamos.
     (currentComments, newComment: string) => {
       lastId++;
       return [
@@ -70,7 +79,7 @@ export const InstagromApp = () => {
       //     },
       //   ]);
 
-      // Revert process
+      // Revert process (obvio con el reject pero aqui podemos ponerlo asi)
       setComments((prev) => prev);
       toast("Error al agregar comentario", {
         description: "Intente nuevamente",
