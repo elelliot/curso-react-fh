@@ -11,6 +11,8 @@ let lastId = 2;
 1- Actualizamos el `state` de forma optimista (useOptimistic) asumiendo que el request sera un exito
 2- Con `useTransition` hariamos el HTTP request y con el `isPending` controlariamos el la UI
 `isPending` es `true` cuando el `action` esta ejecutandose
+
+3- En caso de fallar, dentro del action de useTransition podemos hacer fallback al `state` anterior
 */
 
 export const InstagromApp = () => {
