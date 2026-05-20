@@ -29,6 +29,7 @@ y considerar el initial state de la data.
 Para evitar manejar varios estados, podemos usar `use` de React; no es Hook, es API; 
 Junto con el componente <Suspense />
 que maneja la carga de un elemento mientras ejecuta el `use` (el cual es una Promesa o Context que React conoce como `Usable`)
+*?Tambien `use` a diferencia de los hooks SI se pueden usar dentro de bucles o condicionales
 
 Los server-components permiten que un componente sea `async` y asi evitamos el `use` pero eso solo se puede con NextJS o
 en un entorno que lo soporte, React lo hace pero es algo experimental.
