@@ -8,11 +8,12 @@ interface Comment {
 let lastId = 2;
 
 /*
-1- Actualizamos el `state` de forma optimista (useOptimistic) asumiendo que el request sera un exito
-2- Con `useTransition` hariamos el HTTP request y con el `isPending` controlariamos el la UI
+1- Actualizamos el state `optimista` basado en el `real` (useOptimistic) asumiendo que el request sera un exito
+2- Con `useTransition` hariamos el HTTP request y con el `isPending` controlariamos la UI
 `isPending` es `true` cuando el `action` esta ejecutandose
 
-3- En caso de fallar, dentro del action de useTransition podemos hacer fallback al `state` anterior
+3- En caso de fallar la request, dentro del `action` de useTransition podemos hacer fallback al `state` anterior
+transformando el state `real` a su mismo valor anterior y React deja de tomar en cuenta el `optimista` y renderea el `real`
 */
 
 export const InstagromApp = () => {
@@ -81,7 +82,7 @@ export const InstagromApp = () => {
       //     },
       //   ]);
 
-      // Revert process (obvio con el reject pero aqui podemos ponerlo asi)
+      // Revert process (El estado "real" no se actualiza por tanto se descarta el "optimistic" )
       setComments((prev) => prev);
       toast("Error al agregar comentario", {
         description: "Intente nuevamente",
