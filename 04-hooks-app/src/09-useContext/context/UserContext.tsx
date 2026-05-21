@@ -1,6 +1,18 @@
 import { createContext, useState, type PropsWithChildren } from "react";
 import { users, type User } from "../data/user-mock.data";
 
+// Esto pudiera ser usado en useEffect, pero wakala, por que te da warning cagon y dice que uses useEffectEvent y doble wakala. Ponemos fuera la funcion para que el ciclo de react no afecte
+const getInitialUser = (): { user: User | null; authStatus: AuthStatus } => {
+  const storedUserId = localStorage.getItem("userId");
+  if (!storedUserId) return { user: null, authStatus: "not-authenticated" };
+
+  const user = users.find((u) => u.id === +storedUserId) ?? null;
+  return {
+    user,
+    authStatus: user ? "authenticated" : "not-authenticated",
+  };
+};
+
 /* 
 * Hay varias formas de tipar al `children`
 
@@ -32,6 +44,7 @@ type AuthStatus = "checking" | "authenticated" | "not-authenticated";
 interface UserContextProps {
   // state
   authStatus: AuthStatus;
+  isAuthenticated: boolean;
   user: User | null;
 
   //methods
@@ -45,10 +58,13 @@ export const UserContext = createContext({} as UserContextProps);
 // HOC
 export const UserContextProvider = ({ children }: PropsWithChildren) => {
   // State
-  const [authStatus, setAuthStatus] = useState<AuthStatus>("checking");
-  const [user, setUser] = useState<User | null>(null);
+  const [authStatus, setAuthStatus] = useState<AuthStatus>(
+    () => getInitialUser().authStatus,
+  ); // what about `checking` ?
+  const [user, setUser] = useState<User | null>(() => getInitialUser().user);
 
   // Logic
+
   const handleLogin = (userId: number) => {
     const user = users.find((user) => user.id === userId);
 
@@ -60,6 +76,7 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
     }
     setUser(user);
     setAuthStatus("authenticated");
+    localStorage.setItem("userId", userId.toString());
     return true;
   };
 
@@ -67,6 +84,7 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
     console.log("Log Out");
     setAuthStatus("not-authenticated");
     setUser(null);
+    localStorage.removeItem("userId");
   };
 
   return (
@@ -76,6 +94,7 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
     <UserContext
       value={{
         authStatus,
+        isAuthenticated: authStatus === "authenticated",
         user,
         login: handleLogin,
         logout: handleLogout,

@@ -6,11 +6,10 @@ import { UserContext } from "@/09-useContext/context/UserContext";
 import { toast } from "sonner";
 
 export const LoginPage = () => {
+  const navigation = useNavigate();
   const { login } = useContext(UserContext); //* Consumimos el Context que creamos
 
   const [userId, setUserId] = useState("");
-
-  const navigation = useNavigate();
 
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
