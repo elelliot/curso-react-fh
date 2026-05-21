@@ -1,17 +1,10 @@
-import { createContext, useState, type PropsWithChildren } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+  type PropsWithChildren,
+} from "react";
 import { users, type User } from "../data/user-mock.data";
-
-// Esto pudiera ser usado en useEffect, pero wakala, por que te da warning cagon y dice que uses useEffectEvent y doble wakala. Ponemos fuera la funcion para que el ciclo de react no afecte
-const getInitialUser = (): { user: User | null; authStatus: AuthStatus } => {
-  const storedUserId = localStorage.getItem("userId");
-  if (!storedUserId) return { user: null, authStatus: "not-authenticated" };
-
-  const user = users.find((u) => u.id === +storedUserId) ?? null;
-  return {
-    user,
-    authStatus: user ? "authenticated" : "not-authenticated",
-  };
-};
 
 /* 
 * Hay varias formas de tipar al `children`
@@ -53,18 +46,16 @@ interface UserContextProps {
 }
 
 // ! Creamos el contexto con react, y si le mandamos un Generic, pide un estado inicial, pero si no queremos ponerlo, solo casteamos
+// eslint-disable-next-line react-refresh/only-export-components
 export const UserContext = createContext({} as UserContextProps);
 
 // HOC
 export const UserContextProvider = ({ children }: PropsWithChildren) => {
   // State
-  const [authStatus, setAuthStatus] = useState<AuthStatus>(
-    () => getInitialUser().authStatus,
-  ); // what about `checking` ?
-  const [user, setUser] = useState<User | null>(() => getInitialUser().user);
+  const [authStatus, setAuthStatus] = useState<AuthStatus>("checking"); // what about `checking` ?
+  const [user, setUser] = useState<User | null>(null);
 
   // Logic
-
   const handleLogin = (userId: number) => {
     const user = users.find((user) => user.id === userId);
 
@@ -74,6 +65,7 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
       setAuthStatus("not-authenticated");
       return false;
     }
+
     setUser(user);
     setAuthStatus("authenticated");
     localStorage.setItem("userId", userId.toString());
@@ -86,6 +78,18 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
     setUser(null);
     localStorage.removeItem("userId");
   };
+
+  // ! Tira warning but fuck it
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      handleLogin(+storedUserId);
+      return;
+    }
+
+    handleLogout();
+  }, []);
 
   return (
     // Idealmente, no deberiamos poner HTML en un Context Provider, solo deberia tener informacion o acciones para que los otros componentes accedan

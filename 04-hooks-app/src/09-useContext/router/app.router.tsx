@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { AboutPage } from "../pages/about/AboutPage";
 import { ProfilePage } from "../pages/profile/ProfilePage";
 import { LoginPage } from "../pages/auth/LoginPage";
+import { PrivateRoute } from "./PrivateRoute";
 
 // NOTE: React Router (sin react-router-dom) en modo Data (Basicamente como Vue Router) el declarativo es el de rutas como arbol de componentes de <Route />
 
@@ -13,7 +14,8 @@ export const appRouter = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <ProfilePage />,
+    // element: <ProfilePage />,
+    element: <PrivateRoute element={<ProfilePage />} />,
   },
   {
     path: "/login",
