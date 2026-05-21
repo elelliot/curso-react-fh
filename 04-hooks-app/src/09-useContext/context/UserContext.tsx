@@ -1,5 +1,5 @@
 import { createContext, useState, type PropsWithChildren } from "react";
-import type { User } from "../data/user-mock.data";
+import { users, type User } from "../data/user-mock.data";
 
 /* 
 * Hay varias formas de tipar al `children`
@@ -40,7 +40,7 @@ interface UserContextProps {
 }
 
 // ! Creamos el contexto con react, y si le mandamos un Generic, pide un estado inicial, pero si no queremos ponerlo, solo casteamos
-const UserContext = createContext({} as UserContextProps);
+export const UserContext = createContext({} as UserContextProps);
 
 // HOC
 export const UserContextProvider = ({ children }: PropsWithChildren) => {
@@ -50,13 +50,23 @@ export const UserContextProvider = ({ children }: PropsWithChildren) => {
 
   // Logic
   const handleLogin = (userId: number) => {
-    console.log(userId);
+    const user = users.find((user) => user.id === userId);
 
+    if (!user) {
+      console.log(`USER NOT FOUND ${userId}`);
+      setUser(null);
+      setAuthStatus("not-authenticated");
+      return false;
+    }
+    setUser(user);
+    setAuthStatus("authenticated");
     return true;
   };
 
   const handleLogout = () => {
     console.log("Log Out");
+    setAuthStatus("not-authenticated");
+    setUser(null);
   };
 
   return (
