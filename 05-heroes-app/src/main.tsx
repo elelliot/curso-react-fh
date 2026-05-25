@@ -1,11 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { HeroesApp } from "./HeroesApp";
 import "./index.css";
-import { Button } from "./components/ui/button";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <h1 className="text-3xl font-bold underline">Hello world!</h1>
-    <Button>Hola de nuevo</Button>
+    <HeroesApp />
   </StrictMode>,
 );
