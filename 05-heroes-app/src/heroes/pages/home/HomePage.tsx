@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomJumboTron } from "@/components/custom/CustomJumboTron";
+import { CustomBreadCrumbs } from "@/components/custom/CustomBreadCrumbs";
+import { CustomPagination } from "@/components/custom/CustomPagination";
 import { HeroStats } from "@/heroes/components/HeroStats";
 import { HeroGrid } from "@/heroes/components/HeroGrid";
-import { useState } from "react";
-import { CustomPagination } from "@/components/custom/CustomPagination";
 
 export const HomePage = () => {
   const [activeTab, setActiveTab] = useState<
@@ -18,6 +19,9 @@ export const HomePage = () => {
           title="Universo de SuperHeroes"
           description="Descubre, explora y administra super heroes y villanos"
         />
+
+        {/* Breadcrumbs */}
+        <CustomBreadCrumbs currentPage="SuperHeroes" />
 
         {/* Stats Dashboard */}
         <HeroStats />
