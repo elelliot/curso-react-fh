@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo } from "react";
+import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomJumboTron } from "@/components/custom/CustomJumboTron";
@@ -9,14 +10,19 @@ import { HeroGrid } from "@/heroes/components/HeroGrid";
 import { getHeroesByPageAction } from "@/heroes/actions/get-heroes-by-page.action";
 
 export const HomePage = () => {
-  const [activeTab, setActiveTab] = useState<
-    "all" | "favorites" | "heroes" | "villains"
-  >("all");
+  // React Router `useSearchParams()` hook, en lugar de usar `useState` para manejar state con la URL
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // ! No tenemos `state` ni error handling y peor, se ejecuta cada que se monta el componente... React Query es la clave
-  // useEffect(() => {
-  //   getHeroesByPage().then((heroes) => console.log({ heroes }));
-  // }, []);
+  const activeTab = searchParams.get("tab") ?? "all";
+
+  // Validamos el valor de activeTab para que la app no se rompa si alguien pone cualquier wea
+  const selectedTab = useMemo(() => {
+    const validTabs = ["all", "favorites", "heroes", "villains"];
+
+    return validTabs.includes(activeTab) ? activeTab : "all"; // Si no es valido, el searchParam se sigue viendo con lo que pusieron, pero maneja el valor de `all` y asi no se rompe nada
+  }, [activeTab]);
+
+  //* Con lo de arriba nos deshacemos del useState, y el tab controller lo manejamos con la url y el hook
 
   const { data: heroesResponse, isLoading } = useQuery({
     queryKey: ["heroes"],
@@ -43,26 +49,53 @@ export const HomePage = () => {
           <HeroStats />
 
           {/* Tabs */}
-          <Tabs value={activeTab} className="mb-8">
+          <Tabs value={selectedTab} className="mb-8">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="all" onClick={() => setActiveTab("all")}>
+              <TabsTrigger
+                value="all"
+                onClick={() =>
+                  /* Seteamos el nuevo param como si fuera useState, con un callback para poder mantener las params anteriores
+                  Ya que si por ejemplo tuvieramos mas params (?tab=all&offset=10) al hacerlo de la forma basica, perderiamos los params
+                  anteriores. De esta forma los preservamos
+                  */
+                  setSearchParams((prev) => {
+                    prev.set("tab", "all");
+                    return prev;
+                  })
+                }
+              >
                 All Characters (16)
               </TabsTrigger>
               <TabsTrigger
                 value="favorites"
-                onClick={() => setActiveTab("favorites")}
+                onClick={() =>
+                  setSearchParams((prev) => {
+                    prev.set("tab", "favorites");
+                    return prev;
+                  })
+                }
               >
                 Favorites (3)
               </TabsTrigger>
               <TabsTrigger
                 value="heroes"
-                onClick={() => setActiveTab("heroes")}
+                onClick={() =>
+                  setSearchParams((prev) => {
+                    prev.set("tab", "heroes");
+                    return prev;
+                  })
+                }
               >
                 Heroes (12)
               </TabsTrigger>
               <TabsTrigger
                 value="villains"
-                onClick={() => setActiveTab("villains")}
+                onClick={() =>
+                  setSearchParams((prev) => {
+                    prev.set("tab", "villains");
+                    return prev;
+                  })
+                }
               >
                 Villains (2)
               </TabsTrigger>
