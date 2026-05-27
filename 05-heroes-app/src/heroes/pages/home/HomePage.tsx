@@ -18,77 +18,77 @@ export const HomePage = () => {
   //   getHeroesByPage().then((heroes) => console.log({ heroes }));
   // }, []);
 
-  const { data, isLoading } = useQuery({
+  const { data: heroesResponse, isLoading } = useQuery({
     queryKey: ["heroes"],
     queryFn: () => getHeroesByPageAction(),
     staleTime: 1000 * 60 * 5, // 5 Minutos para que no haga nuevas peticiones y nos devuelva el cache antes de que se vuelva obsoleta la data
   });
 
-  console.log({ data });
-  console.log({ isLoading });
+  if (isLoading) return <p>Cargando heroes...</p>;
 
-  return (
-    <>
+  if (heroesResponse)
+    return (
       <>
-        {/* Header */}
-        <CustomJumboTron
-          title="Universo de SuperHeroes"
-          description="Descubre, explora y administra super heroes y villanos"
-        />
+        <>
+          {/* Header */}
+          <CustomJumboTron
+            title="Universo de SuperHeroes"
+            description="Descubre, explora y administra super heroes y villanos"
+          />
 
-        {/* Breadcrumbs */}
-        <CustomBreadCrumbs currentPage="SuperHeroes" />
+          {/* Breadcrumbs */}
+          <CustomBreadCrumbs currentPage="SuperHeroes" />
 
-        {/* Stats Dashboard */}
-        <HeroStats />
+          {/* Stats Dashboard */}
+          <HeroStats />
 
-        {/* Tabs */}
-        <Tabs value={activeTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all" onClick={() => setActiveTab("all")}>
-              All Characters (16)
-            </TabsTrigger>
-            <TabsTrigger
-              value="favorites"
-              onClick={() => setActiveTab("favorites")}
-            >
-              Favorites (3)
-            </TabsTrigger>
-            <TabsTrigger value="heroes" onClick={() => setActiveTab("heroes")}>
-              Heroes (12)
-            </TabsTrigger>
-            <TabsTrigger
-              value="villains"
-              onClick={() => setActiveTab("villains")}
-            >
-              Villains (2)
-            </TabsTrigger>
-          </TabsList>
+          {/* Tabs */}
+          <Tabs value={activeTab} className="mb-8">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="all" onClick={() => setActiveTab("all")}>
+                All Characters (16)
+              </TabsTrigger>
+              <TabsTrigger
+                value="favorites"
+                onClick={() => setActiveTab("favorites")}
+              >
+                Favorites (3)
+              </TabsTrigger>
+              <TabsTrigger
+                value="heroes"
+                onClick={() => setActiveTab("heroes")}
+              >
+                Heroes (12)
+              </TabsTrigger>
+              <TabsTrigger
+                value="villains"
+                onClick={() => setActiveTab("villains")}
+              >
+                Villains (2)
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="all">
-            <h1>Todos los personajes</h1>
-            <HeroGrid />
-          </TabsContent>
-          <TabsContent value="favorites">
-            <h1>Favoritos</h1>
-            <HeroGrid />
-          </TabsContent>
-          <TabsContent value="heroes">
-            <h1>Heroes</h1>
-            <HeroGrid />
-          </TabsContent>
-          <TabsContent value="villains">
-            <h1>Villanos</h1>
-            <HeroGrid />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="all">
+              <h1>Todos los personajes</h1>
+              <HeroGrid heroes={heroesResponse.heroes} />
+            </TabsContent>
+            <TabsContent value="favorites">
+              <h1>Favoritos</h1>
+              <HeroGrid heroes={[]} />
+            </TabsContent>
+            <TabsContent value="heroes">
+              <h1>Heroes</h1>
+              <HeroGrid heroes={[]} />
+            </TabsContent>
+            <TabsContent value="villains">
+              <h1>Villanos</h1>
+              <HeroGrid heroes={[]} />
+            </TabsContent>
+          </Tabs>
 
-        {/* Character Grid */}
-        <HeroGrid />
-
-        {/* Pagination */}
-        <CustomPagination totalPages={8} />
+          {/* Pagination */}
+          <CustomPagination totalPages={8} />
+        </>
       </>
-    </>
-  );
+    );
 };
