@@ -27,8 +27,9 @@ export const HomePage = () => {
   //* Con lo de arriba nos deshacemos del useState, y el tab controller lo manejamos con la url y el hook
 
   const { data: heroesResponse, isLoading } = useQuery({
-    queryKey: ["heroes"],
-    queryFn: () => getHeroesByPageAction(+page, +limit),
+    // queryKey: ["heroes", "page", page, "limit", limit], //* NOTE: Si por ejemplo les cambiamos de orden ["heroes", "page", +page, "limit", +limit] -> ["heroes", "limit", +limit, "page", +page], para TanStack Query, es una llave diferente
+    queryKey: ["heroes", { page, limit }], //* Si la posicion no importa, es mejor usar un object
+    queryFn: () => getHeroesByPageAction(+page, +limit), //* Si al queryFn le mandamos argumentos, esos args, deben estar en el query key
     staleTime: 1000 * 60 * 5, // 5 Minutos para que no haga nuevas peticiones y nos devuelva el cache antes de que se vuelva obsoleta la data
   });
 
@@ -122,7 +123,7 @@ export const HomePage = () => {
           </Tabs>
 
           {/* Pagination */}
-          <CustomPagination totalPages={8} />
+          <CustomPagination totalPages={heroesResponse.pages ?? 1} />
         </>
       </>
     );
