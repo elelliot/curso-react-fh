@@ -14,6 +14,8 @@ export const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const activeTab = searchParams.get("tab") ?? "all";
+  const page = searchParams.get("page") ?? "1";
+  const limit = searchParams.get("limit") ?? "6";
 
   // Validamos el valor de activeTab para que la app no se rompa si alguien pone cualquier wea
   const selectedTab = useMemo(() => {
@@ -26,7 +28,7 @@ export const HomePage = () => {
 
   const { data: heroesResponse, isLoading } = useQuery({
     queryKey: ["heroes"],
-    queryFn: () => getHeroesByPageAction(),
+    queryFn: () => getHeroesByPageAction(+page, +limit),
     staleTime: 1000 * 60 * 5, // 5 Minutos para que no haga nuevas peticiones y nos devuelva el cache antes de que se vuelva obsoleta la data
   });
 
