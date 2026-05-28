@@ -8,6 +8,7 @@ import { CustomPagination } from "@/components/custom/CustomPagination";
 import { HeroStats } from "@/heroes/components/HeroStats";
 import { HeroGrid } from "@/heroes/components/HeroGrid";
 import { getHeroesByPageAction } from "@/heroes/actions/get-heroes-by-page.action";
+import { useHeroSummary } from "@/heroes/hooks/useHeroSummary";
 
 export const HomePage = () => {
   // React Router `useSearchParams()` hook, en lugar de usar `useState` para manejar state con la URL
@@ -26,6 +27,7 @@ export const HomePage = () => {
 
   //* Con lo de arriba nos deshacemos del useState, y el tab controller lo manejamos con la url y el hook
 
+  // `usePaginatedHero(+page, +limit)`
   const { data: heroesResponse, isLoading } = useQuery({
     // queryKey: ["heroes", "page", page, "limit", limit], //* NOTE: Si por ejemplo les cambiamos de orden ["heroes", "page", +page, "limit", +limit] -> ["heroes", "limit", +limit, "page", +page], para TanStack Query, es una llave diferente
     queryKey: ["heroes", { page, limit }], //* Si la posicion no importa, es mejor usar un object
@@ -33,9 +35,11 @@ export const HomePage = () => {
     staleTime: 1000 * 60 * 5, // 5 Minutos para que no haga nuevas peticiones y nos devuelva el cache antes de que se vuelva obsoleta la data
   });
 
-  if (isLoading) return <p>Cargando heroes...</p>;
+  const { data: summary, isLoading: isLoadingSummary } = useHeroSummary();
 
-  if (heroesResponse)
+  if (isLoading && isLoadingSummary) return <p>Cargando heroes...</p>;
+
+  if (heroesResponse && summary)
     return (
       <>
         <>
@@ -67,7 +71,7 @@ export const HomePage = () => {
                   })
                 }
               >
-                All Characters (16)
+                All Characters ({summary.totalHeroes})
               </TabsTrigger>
               <TabsTrigger
                 value="favorites"
@@ -89,7 +93,7 @@ export const HomePage = () => {
                   })
                 }
               >
-                Heroes (12)
+                Heroes ({summary.heroCount})
               </TabsTrigger>
               <TabsTrigger
                 value="villains"
@@ -100,7 +104,7 @@ export const HomePage = () => {
                   })
                 }
               >
-                Villains (2)
+                Villains ({summary.villainCount})
               </TabsTrigger>
             </TabsList>
 
