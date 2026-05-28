@@ -6,6 +6,7 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 export const getHeroesByPageAction = async (
   page: number, // Page 1 -> offset 0 -------- Page 2 -> offset 6
   limit: number = 6, // El offset se determina por el limit
+  category: string = "all",
 ): Promise<HeroesResponse> => {
   //* page & limit validation, si no es numero, que sea la pagina 1 (No me gusta modificar los argumentos pero meh)
   if (isNaN(page)) {
@@ -19,6 +20,7 @@ export const getHeroesByPageAction = async (
     params: {
       limit,
       offset: (page - 1) * limit,
+      category,
     },
   });
 

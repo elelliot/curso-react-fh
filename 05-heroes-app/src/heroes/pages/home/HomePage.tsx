@@ -17,6 +17,7 @@ export const HomePage = () => {
   const activeTab = searchParams.get("tab") ?? "all";
   const page = searchParams.get("page") ?? "1";
   const limit = searchParams.get("limit") ?? "6";
+  const category = searchParams.get("category") ?? "all";
 
   // Validamos el valor de activeTab para que la app no se rompa si alguien pone cualquier wea
   const selectedTab = useMemo(() => {
@@ -27,7 +28,11 @@ export const HomePage = () => {
 
   //* Con lo de arriba nos deshacemos del useState, y el tab controller lo manejamos con la url y el hook
 
-  const { data: heroesResponse, isLoading } = usePaginatedHero(+page, +limit);
+  const { data: heroesResponse, isLoading } = usePaginatedHero(
+    +page,
+    +limit,
+    category,
+  );
   const { data: summary, isLoading: isLoadingSummary } = useHeroSummary();
 
   if (isLoading && isLoadingSummary) return <p>Cargando heroes...</p>;
@@ -60,6 +65,8 @@ export const HomePage = () => {
                   */
                   setSearchParams((prev) => {
                     prev.set("tab", "all");
+                    prev.set("category", "all");
+                    prev.set("page", "1");
                     return prev;
                   })
                 }
@@ -71,6 +78,7 @@ export const HomePage = () => {
                 onClick={() =>
                   setSearchParams((prev) => {
                     prev.set("tab", "favorites");
+                    // prev.set("category", "favorites");
                     return prev;
                   })
                 }
@@ -82,6 +90,8 @@ export const HomePage = () => {
                 onClick={() =>
                   setSearchParams((prev) => {
                     prev.set("tab", "heroes");
+                    prev.set("category", "hero");
+                    prev.set("page", "1");
                     return prev;
                   })
                 }
@@ -93,6 +103,8 @@ export const HomePage = () => {
                 onClick={() =>
                   setSearchParams((prev) => {
                     prev.set("tab", "villains");
+                    prev.set("category", "villain");
+                    prev.set("page", "1");
                     return prev;
                   })
                 }
@@ -107,15 +119,15 @@ export const HomePage = () => {
             </TabsContent>
             <TabsContent value="favorites">
               <h1>Favoritos</h1>
-              <HeroGrid heroes={[]} />
+              {/* <HeroGrid heroes={heroesResponse.heroes} /> */}
             </TabsContent>
             <TabsContent value="heroes">
               <h1>Heroes</h1>
-              <HeroGrid heroes={[]} />
+              <HeroGrid heroes={heroesResponse.heroes} />
             </TabsContent>
             <TabsContent value="villains">
               <h1>Villanos</h1>
-              <HeroGrid heroes={[]} />
+              <HeroGrid heroes={heroesResponse.heroes} />
             </TabsContent>
           </Tabs>
 
