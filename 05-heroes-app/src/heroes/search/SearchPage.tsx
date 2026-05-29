@@ -17,17 +17,18 @@ const SearchPage = () => {
   // const category = searchParams.get("category") ?? undefined;
   // const universe = searchParams.get("universe") ?? undefined;
   // const status = searchParams.get("status") ?? undefined;
-  // const strength = searchParams.get("strength") ?? undefined;
+  const strength = searchParams.get("strength") ?? undefined;
 
   const { data: heroes = [], isLoading } = useQuery({
     queryKey: [
       "hero-search",
       // { name, team, category, universe, status, strength },
-      { name },
+      { name, strength },
     ],
     queryFn: () =>
       searchHeroes({
         name,
+        strength,
       }),
     staleTime: 1000 * 60 * 5,
   });
