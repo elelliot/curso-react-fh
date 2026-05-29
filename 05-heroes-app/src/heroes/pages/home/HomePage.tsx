@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomJumboTron } from "@/components/custom/CustomJumboTron";
@@ -8,8 +8,10 @@ import { HeroStats } from "@/heroes/components/HeroStats";
 import { HeroGrid } from "@/heroes/components/HeroGrid";
 import { useHeroSummary } from "@/heroes/hooks/useHeroSummary";
 import { usePaginatedHero } from "@/heroes/hooks/usePaginatedHero";
+import { FavoriteHeroContext } from "@/heroes/context/FavoriteHeroContext";
 
 export const HomePage = () => {
+  const { favoriteCount, favorites } = use(FavoriteHeroContext);
   //* Podriamos hacer un custom hook con los searchParams y el page y limit
   // React Router `useSearchParams()` hook, en lugar de usar `useState` para manejar state con la URL
   const [searchParams, setSearchParams] = useSearchParams();
@@ -83,7 +85,7 @@ export const HomePage = () => {
                   })
                 }
               >
-                Favorites (3)
+                Favorites ({favoriteCount})
               </TabsTrigger>
               <TabsTrigger
                 value="heroes"
@@ -118,8 +120,7 @@ export const HomePage = () => {
               <HeroGrid heroes={heroesResponse.heroes} />
             </TabsContent>
             <TabsContent value="favorites">
-              <h1>Favoritos</h1>
-              {/* <HeroGrid heroes={heroesResponse.heroes} /> */}
+              <HeroGrid heroes={favorites} />
             </TabsContent>
             <TabsContent value="heroes">
               <h1>Heroes</h1>
@@ -132,7 +133,9 @@ export const HomePage = () => {
           </Tabs>
 
           {/* Pagination */}
-          <CustomPagination totalPages={heroesResponse.pages ?? 1} />
+          {selectedTab !== "favorites" && (
+            <CustomPagination totalPages={heroesResponse.pages ?? 1} />
+          )}
         </>
       </>
     );
