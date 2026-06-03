@@ -128,3 +128,8 @@
     @apply font-sans;
     }
 }
+
+/* Lo agregamos a tailwind pa usarlo */
+@theme {
+  --font-montserrat: "Montserrat Alternates", sans-serif
+}
