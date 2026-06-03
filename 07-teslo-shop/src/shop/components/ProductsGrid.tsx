@@ -1,10 +1,10 @@
+import { useState } from "react";
+import { useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/mocks/products.mock";
 import { Filter, Grid, List } from "lucide-react";
 import { ProductCard } from "./ProductCard";
 import { FilterSidebar } from "./FilterSidebar";
-import { useSearchParams } from "react-router";
-import { useState } from "react";
 
 interface Props {
   products: Product[];
