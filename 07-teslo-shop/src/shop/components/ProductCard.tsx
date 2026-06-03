@@ -17,7 +17,7 @@ export const ProductCard = ({
   category,
 }: ProductCardProps) => {
   return (
-    <Card className="group border-0 shadow-none product-card-hover cursor-pointer">
+    <Card className="py-0 group border-0 shadow-none product-card-hover cursor-pointer">
       <CardContent className="p-0">
         <div className="relative aspect-square overflow-hidden bg-muted rounded-lg">
           <img
