@@ -37,7 +37,7 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
   ];
 
   const isActiveRoute = (to: string) => {
-    //NOTE: Cuando estemos en rutas mas internas de /admin/products/ , como -> /admin/products/new ...etc
+    //NOTE: Cuando estemos en sub-rutas /admin/products/ , como -> /admin/products/new ...etc, se mantiene el highlight de ese link
     if (pathname.includes("/admin/products") && to === "/admin/products")
       return true;
     return pathname === to;
