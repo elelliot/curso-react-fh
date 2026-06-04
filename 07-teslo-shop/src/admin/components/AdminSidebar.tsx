@@ -37,7 +37,9 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
   ];
 
   const isActiveRoute = (to: string) => {
-    //TODO: Ajustarlo cuando estemos en la pantalla del producto
+    //NOTE: Cuando estemos en rutas mas internas de /admin/products/ , como -> /admin/products/new ...etc
+    if (pathname.includes("/admin/products") && to === "/admin/products")
+      return true;
     return pathname === to;
   };
 
