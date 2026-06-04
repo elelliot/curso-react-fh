@@ -3,6 +3,12 @@ import { Link, useParams } from "react-router";
 import { X, Plus, Upload, Tag, SaveAll } from "lucide-react";
 import { AdminTitle } from "@/admin/components/AdminTitle";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Product {
   id: string;
@@ -90,9 +96,11 @@ export const AdminProductPage = () => {
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // NOTE: Cuando arrastramos y justo llegamos al dropzone es `dragenter` y si mantenemos arrastrando y nos quedamos encima del elemento `dropable` entonces es `dragover`
     if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
     } else if (e.type === "dragleave") {
+      // NOTE: dragleave no es 100% preciso pero es cuando nos salimos de la dropzone mientras drageamos un elemento
       setDragActive(false);
     }
   };
@@ -105,6 +113,7 @@ export const AdminProductPage = () => {
     console.log(files);
   };
 
+  //NOTE: Esto solo se ejecuta cuando subimos el archivo haciendo click y seleccionando (osea desde el input)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     console.log(files);
@@ -144,11 +153,10 @@ export const AdminProductPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Título del producto
                   </label>
-                  <input
+                  <Input
                     type="text"
                     value={product.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                     placeholder="Título del producto"
                   />
                 </div>
@@ -158,13 +166,12 @@ export const AdminProductPage = () => {
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                       Precio ($)
                     </label>
-                    <input
+                    <Input
                       type="number"
                       value={product.price}
                       onChange={(e) =>
                         handleInputChange("price", parseFloat(e.target.value))
                       }
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       placeholder="Precio del producto"
                     />
                   </div>
@@ -173,13 +180,12 @@ export const AdminProductPage = () => {
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                       Stock del producto
                     </label>
-                    <input
+                    <Input
                       type="number"
                       value={product.stock}
                       onChange={(e) =>
                         handleInputChange("stock", parseInt(e.target.value))
                       }
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       placeholder="Stock del producto"
                     />
                   </div>
@@ -189,11 +195,10 @@ export const AdminProductPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Slug del producto
                   </label>
-                  <input
+                  <Input
                     type="text"
                     value={product.slug}
                     onChange={(e) => handleInputChange("slug", e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                     placeholder="Slug del producto"
                   />
                 </div>
@@ -202,31 +207,32 @@ export const AdminProductPage = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Género del producto
                   </label>
-                  <select
+                  <NativeSelect
                     value={product.gender}
                     onChange={(e) =>
                       handleInputChange("gender", e.target.value)
                     }
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full"
                   >
-                    <option value="men">Hombre</option>
-                    <option value="women">Mujer</option>
-                    <option value="unisex">Unisex</option>
-                    <option value="kids">Niño</option>
-                  </select>
+                    <NativeSelectOption value="men">Hombre</NativeSelectOption>
+                    <NativeSelectOption value="women">Mujer</NativeSelectOption>
+                    <NativeSelectOption value="unisex">
+                      Unisex
+                    </NativeSelectOption>
+                    <NativeSelectOption value="kids">Niño</NativeSelectOption>
+                  </NativeSelect>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Descripción del producto
                   </label>
-                  <textarea
+                  <Textarea
                     value={product.description}
                     onChange={(e) =>
                       handleInputChange("description", e.target.value)
                     }
                     rows={5}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
                     placeholder="Descripción del producto"
                   />
                 </div>
@@ -240,6 +246,7 @@ export const AdminProductPage = () => {
               </h2>
 
               <div className="space-y-4">
+                {/* Available Sizes */}
                 <div className="flex flex-wrap gap-2">
                   {product.sizes.map((size) => (
                     <span
@@ -257,6 +264,7 @@ export const AdminProductPage = () => {
                   ))}
                 </div>
 
+                {/* Add Sizes */}
                 <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-200">
                   <span className="text-sm text-slate-600 mr-2">
                     Añadir tallas:
@@ -305,15 +313,14 @@ export const AdminProductPage = () => {
                 </div>
 
                 <div className="flex gap-2">
-                  <input
+                  <Input
                     type="text"
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && addTag()}
                     placeholder="Añadir nueva etiqueta..."
-                    className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   />
-                  <Button onClick={addTag} className="px-4 py-2rounded-lg ">
+                  <Button onClick={addTag} className="px-4">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
