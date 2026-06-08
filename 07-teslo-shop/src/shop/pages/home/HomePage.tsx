@@ -1,19 +1,27 @@
 import { CustomPagination } from "@/components/custom/CustomPagination";
-import { products } from "@/mocks/products.mock";
+import { Spinner } from "@/components/ui/spinner";
 import { CustomJumboTron } from "@/shop/components/CustomJumboTron";
 import { ProductsGrid } from "@/shop/components/ProductsGrid";
 import { useProducts } from "@/shop/hooks/useProducts";
 
 export const HomePage = () => {
-  const { data } = useProducts();
+  const { data, isLoading } = useProducts();
 
-  return (
-    <>
-      <CustomJumboTron title="Todos los Productos" />
+  if (isLoading && !data)
+    return (
+      <div className="flex items-center justify-center">
+        <Spinner className="size-12" />
+      </div>
+    );
 
-      <ProductsGrid products={products} />
+  if (data)
+    return (
+      <>
+        <CustomJumboTron title="Todos los Productos" />
 
-      <CustomPagination totalPages={7} />
-    </>
-  );
+        <ProductsGrid products={data.products || []} />
+
+        <CustomPagination totalPages={7} />
+      </>
+    );
 };
