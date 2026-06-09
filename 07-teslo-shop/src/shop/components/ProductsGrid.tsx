@@ -49,6 +49,7 @@ export const ProductsGrid = ({ products }: Props) => {
                 size="sm"
                 onClick={() => handleViewModeChange("grid")}
                 className="rounded-r-none"
+                disabled={products.length === 0}
               >
                 <Grid className="h-4 w-4" />
               </Button>
@@ -57,6 +58,7 @@ export const ProductsGrid = ({ products }: Props) => {
                 size="sm"
                 onClick={() => handleViewModeChange("list")}
                 className="rounded-l-none"
+                disabled={products.length === 0}
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -88,26 +90,30 @@ export const ProductsGrid = ({ products }: Props) => {
           )}
 
           {/* Products Grid */}
-          <div className="flex-1">
-            <div
-              className={
-                viewMode === "grid"
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                  : "space-y-4"
-              }
-            >
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  name={product.title}
-                  price={product.price}
-                  image={product.images[0]}
-                  category={product.gender}
-                  sizes={product.sizes}
-                />
-              ))}
+          {products.length === 0 ? (
+            <div>No hay productos disponibles</div>
+          ) : (
+            <div className="flex-1">
+              <div
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    : "space-y-4"
+                }
+              >
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    name={product.title}
+                    price={product.price}
+                    image={product.images[0]}
+                    category={product.gender}
+                    sizes={product.sizes}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

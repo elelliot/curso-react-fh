@@ -1,8 +1,30 @@
 import { tesloApi } from "@/api/tesloApi";
 import type { ProductsResponse } from "@/interfaces/products.response";
 
-export const getProductsAction = async (): Promise<ProductsResponse> => {
-  const { data } = await tesloApi<ProductsResponse>("/products");
+interface Options {
+  limit?: number | string;
+  offset?: number | string;
+  sizes?: string;
+  gender?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
+export const getProductsAction = async (
+  options: Options,
+): Promise<ProductsResponse> => {
+  const { limit, offset, sizes, gender, minPrice, maxPrice } = options;
+
+  const { data } = await tesloApi<ProductsResponse>("/products", {
+    params: {
+      limit,
+      offset,
+      sizes,
+      gender,
+      minPrice,
+      maxPrice,
+    },
+  });
 
   // Hay que agregar el URL a las imagenes de los productos
   const productsWithImageUrls = data.products.map((product) => ({
