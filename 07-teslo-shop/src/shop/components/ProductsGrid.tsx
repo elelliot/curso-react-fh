@@ -91,7 +91,7 @@ export const ProductsGrid = ({ products }: Props) => {
 
           {/* Products Grid */}
           {products.length === 0 ? (
-            <div>No hay productos disponibles</div>
+            <p>No hay productos disponibles</p>
           ) : (
             <div className="flex-1">
               <div
