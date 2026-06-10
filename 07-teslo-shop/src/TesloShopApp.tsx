@@ -10,7 +10,7 @@ export const TesloShopApp = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster position="top-right" />
-      <RouterProvider router={appRouter} />;
+      <RouterProvider router={appRouter} />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
