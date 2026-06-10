@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { CustomLogo } from "@/components/custom/CustomLogo";
+import { useAuthStore } from "@/auth/store/auth.store";
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { user, logout } = useAuthStore();
   const { gender } = useParams();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -96,11 +98,22 @@ export const CustomHeader = () => {
               <Search className="h-5 w-5" />
             </Button>
 
-            <Link to="/auth/login">
-              <Button size="sm" className="ml-2">
-                Login
+            {!user ? (
+              <Link to="/auth/login">
+                <Button size="sm" className="ml-2">
+                  Login
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                size="sm"
+                className="ml-2"
+                variant="outline"
+                onClick={logout}
+              >
+                Cerrar Sesión
               </Button>
-            </Link>
+            )}
 
             <Link to="/admin">
               <Button variant="destructive" size="sm" className="ml-2">
