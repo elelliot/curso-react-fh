@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { loginAction } from "../actions/login.action";
 import type { User } from "@/interfaces/user.interface";
 import { checkAuthAction } from "../actions/check-auth.action";
+import { accountRegisterAction } from "../actions/account-register.action";
 
 type AuthStatus = "authenticated" | "not-authenticated" | "checking";
 
@@ -17,6 +18,11 @@ type AuthState = {
 
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
+  register: (
+    fullName: string,
+    email: string,
+    password: string,
+  ) => Promise<boolean>;
   logout: () => void;
   checkAuthStatus: () => Promise<boolean>;
 };
@@ -48,6 +54,17 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       // get().logout() // Podriamos hacer esto
       localStorage.removeItem("token-teslo");
       set({ user: null, token: null, authStatus: "not-authenticated" }); //Borramos el local storage
+      return false;
+    }
+  },
+  register: async (fullName, email, password) => {
+    try {
+      const data = await accountRegisterAction(fullName, email, password);
+      localStorage.setItem("token-teslo", data.token);
+
+      set({ user: data.user, token: data.token, authStatus: "authenticated" });
+      return true;
+    } catch {
       return false;
     }
   },
