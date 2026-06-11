@@ -13,6 +13,8 @@ type AuthState = {
   authStatus: AuthStatus;
 
   // Getters (computed values)
+  isAdmin: () => boolean;
+
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -20,12 +22,18 @@ type AuthState = {
 };
 
 // Funcion que retorna otra funcion y la invoca, entre el 'set' y retorna un object, ahi es donde declaramos el state. 'set' es como el setState (?)
-export const useAuthStore = create<AuthState>()((set) => ({
+export const useAuthStore = create<AuthState>()((set, get) => ({
   // tambien tenemos un 'get' que podemos llamar -> 'get().user'
   // Implementacion del store
   user: null,
   token: null,
   authStatus: "checking",
+
+  // Getters
+  isAdmin: () => {
+    const roles = get().user?.roles || [];
+    return roles?.includes("admin");
+  },
 
   // Actions
   login: async (email, password) => {
