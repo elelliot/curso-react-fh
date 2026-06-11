@@ -8,16 +8,18 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { appRouter } from "./app.router";
-import { checkAuthAction } from "./auth/actions/check-auth.action";
 import { CustomFullScreenLoading } from "./components/custom/CustomFullScreenLoading";
+import { useAuthStore } from "./auth/store/auth.store";
 
 const queryClient = new QueryClient();
 
 // Si usamos `useQuery` de retornar los componentes, tenemos error, ya que el queryClient en ese punto ni siquiera esta montado en el arbol de componentes
 const CheckAuthProvider = ({ children }: PropsWithChildren) => {
+  const { checkAuthStatus } = useAuthStore();
+
   const { isLoading } = useQuery({
     queryKey: ["auth"],
-    queryFn: checkAuthAction,
+    queryFn: checkAuthStatus, //Usamos el `checkAuthAction` en el store, y esa accion de store la usamos aqui
     retry: false, // Si falla esta peticion, es por que el token rip, asi que ni lo reintentes
     refetchInterval: 1000 * 60 * 60 * 1.5, // Como el token espira en 2 horas, podemos hacer un refetch en una hora y media para checar el status
   });
