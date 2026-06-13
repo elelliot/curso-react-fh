@@ -9,14 +9,16 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import type { Product, Size } from "@/interfaces/product.interface";
 import { cn } from "@/lib/utils";
+import type { Product, Size } from "@/interfaces/product.interface";
 
 interface Props {
   title: string;
   subTitle: string;
   product: Product;
+  isPending: boolean;
 
   // Methods
   onSubmit: (productLike: Partial<Product>) => Promise<void>;
@@ -24,7 +26,13 @@ interface Props {
 
 const availableSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
 
-export const ProductForm = ({ title, subTitle, product, onSubmit }: Props) => {
+export const ProductForm = ({
+  title,
+  subTitle,
+  product,
+  isPending,
+  onSubmit,
+}: Props) => {
   const labelInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -105,15 +113,19 @@ export const ProductForm = ({ title, subTitle, product, onSubmit }: Props) => {
       <div className="flex justify-between items-center">
         <AdminTitle title={title} subtitle={subTitle} />
         <div className="flex justify-end mb-10 gap-4">
-          <Button variant="outline">
+          <Button type="button" variant="outline">
             <Link to="/admin/products" className="flex items-center gap-2">
               <X className="w-4 h-4" />
               Cancelar
             </Link>
           </Button>
 
-          <Button>
-            <SaveAll className="w-4 h-4" />
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <Spinner className="w-4 h-4" />
+            ) : (
+              <SaveAll className="w-4 h-4" />
+            )}
             Guardar cambios
           </Button>
         </div>
