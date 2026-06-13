@@ -18,7 +18,7 @@ export const createUpdateProductAction = async (
   rest.price = Number(rest.price || 0);
 
   // No ocupamos mandar toda la data, el backend actualiza lo que le mande
-  const { data } = await tesloApi<Product>("/products", {
+  const { data } = await tesloApi<Product>({
     url: isCreating ? "/products" : `/products/${id}`,
     method: isCreating ? "POST" : "PATCH",
     data: rest, // Crear y editar no manda ni el user ni las imagenes
