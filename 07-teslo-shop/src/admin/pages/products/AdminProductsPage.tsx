@@ -18,7 +18,12 @@ import { currencyFormatter } from "@/lib/currency-formatter";
 export const AdminProductsPage = () => {
   const { data, isLoading } = useProducts();
 
-  if (isLoading) return <Spinner className="size-12" />;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Spinner className="size-12" />
+      </div>
+    );
 
   if (data)
     return (
