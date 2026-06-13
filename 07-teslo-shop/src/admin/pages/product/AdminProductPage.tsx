@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, Navigate, useParams } from "react-router";
 import { X, Plus, Upload, Tag, SaveAll } from "lucide-react";
 import { AdminTitle } from "@/admin/components/AdminTitle";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,9 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { useProduct } from "@/admin/hooks/useProduct";
 
 interface Product {
   id: string;
@@ -25,6 +27,9 @@ interface Product {
 
 export const AdminProductPage = () => {
   const { id } = useParams();
+
+  const { data: product2, isLoading, isError } = useProduct(id || "");
+  console.log({ product2, isLoading });
 
   const productTitle = id === "new" ? "Nuevo producto" : "Editar producto";
   const productSubtitle =
@@ -55,6 +60,15 @@ export const AdminProductPage = () => {
   const [dragActive, setDragActive] = useState(false);
 
   const availableSizes = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+
+  // Redirects
+  if (isError) return <Navigate to="/admin/products" />;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Spinner className="size-12" />
+      </div>
+    );
 
   const handleInputChange = (field: keyof Product, value: string | number) => {
     setProduct((prev) => ({ ...prev, [field]: value }));
