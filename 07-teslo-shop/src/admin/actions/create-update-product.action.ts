@@ -1,6 +1,7 @@
 import { tesloApi } from "@/api/tesloApi";
 import type { Product } from "@/interfaces/product.interface";
 
+// Partial es un utility type que hace todas las props opcionales (en este caso por que no tenemos el id ya que estamos creando un producto)
 export const createUpdateProductAction = async (
   productLike: Partial<Product>,
 ): Promise<Product> => {

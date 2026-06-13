@@ -159,7 +159,7 @@ export const ProductForm = ({ title, subTitle, product, onSubmit }: Props) => {
                       type="number"
                       {...register("price", { required: true, min: 1 })}
                       placeholder="Precio del producto"
-                      className={`${errors.title && "border-red-500"}`}
+                      className={`${errors.price && "border-red-500"}`}
                     />
                     {errors.price && (
                       <p className="text-red-500 text-sm">
@@ -176,7 +176,7 @@ export const ProductForm = ({ title, subTitle, product, onSubmit }: Props) => {
                       type="number"
                       {...register("stock", { required: true, min: 1 })}
                       placeholder="Stock del producto"
-                      className={`${errors.title && "border-red-500"}`}
+                      className={`${errors.stock && "border-red-500"}`}
                     />
                     {errors.stock && (
                       <p className="text-red-500 text-sm">
@@ -200,7 +200,7 @@ export const ProductForm = ({ title, subTitle, product, onSubmit }: Props) => {
                         "El Slug no puede contener espacios en blanco",
                     })}
                     placeholder="Slug del producto"
-                    className={`${errors.title && "border-red-500"}`}
+                    className={`${errors.slug && "border-red-500"}`}
                   />
                   {errors.slug && (
                     <p className="text-red-500 text-sm">
