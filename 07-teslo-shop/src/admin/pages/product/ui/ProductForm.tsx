@@ -35,6 +35,7 @@ export const ProductForm = ({
 }: Props) => {
   const labelInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
 
   // Form
   const {
@@ -100,12 +101,20 @@ export const ProductForm = ({
     setDragActive(false);
     const files = e.dataTransfer.files;
     console.log(files);
+
+    if (!files) return;
+    setFiles((prev) => [...prev, ...Array.from(files)]);
   };
 
   //NOTE: Esto solo se ejecuta cuando subimos el archivo haciendo click y seleccionando (osea desde el input)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     console.log(files);
+
+    if (!files) return;
+
+    // FileList y File[] son diferentes types (no se por que no solo pone `FileList` en el state)
+    setFiles((prev) => [...prev, ...Array.from(files)]);
   };
 
   return (
@@ -419,6 +428,29 @@ export const ProductForm = ({
                         {image}
                       </p>
                     </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Imagenes por cargar */}
+              <div
+                className={cn("mt-6 space-y-3", {
+                  hidden: files.length === 0,
+                })}
+              >
+                <h3 className="text-sm font-medium text-slate-700">
+                  Imágenes por cargar
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {files.map((file, index) => (
+                    <img
+                      // En este caso el index es suficiente, pero tambien podemos usar UUID
+                      // Aqui creamos el source con `createObjectURL` para poder ver el archivo temporalmente
+                      src={URL.createObjectURL(file)}
+                      key={index}
+                      alt="Product"
+                      className="w-full h-full object-cover rounded-lg"
+                    />
                   ))}
                 </div>
               </div>
