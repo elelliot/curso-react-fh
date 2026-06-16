@@ -109,7 +109,7 @@ export const ProductForm = ({
 
     if (!files) return;
 
-    //NOTE: FileList y File[] son diferentes types (no se por que no solo pone `FileList` en el state, btw, ya no usamos state, ahora lo hacemos desde el form)
+    //NOTE: FileList y File[] son diferentes types ,lo pasamos a `File[]` para poder iterar mas facil con array methods
 
     const currentFiles = getValues("files") || [];
     setValue("files", [...currentFiles, ...Array.from(files)]);
