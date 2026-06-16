@@ -18,6 +18,7 @@ import {
 const AuthLayout = lazy(() => import("./auth/layouts/AuthLayout"));
 const AdminLayout = lazy(() => import("./admin/layouts/AdminLayout"));
 
+// NOTE: Al hacer Deploy, hay que usar `createHashRouter` en vez de `BrowserRouter` o hacer otras configuraciones por que las rutas van a fallar...,
 export const appRouter = createBrowserRouter([
   // Main Routes
   {
