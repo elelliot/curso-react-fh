@@ -16,7 +16,6 @@ export const useProduct = (id: string) => {
   const mutation = useMutation({
     mutationFn: createUpdateProductAction,
     onSuccess: (product) => {
-      console.log({ product });
       // Invalidar Cache de products y product
       queryClient.invalidateQueries({ queryKey: ["products"] });
       // NOTE: Este invalidate es para que al terminar de ACTUALIZAR, el form se refresque con esa data

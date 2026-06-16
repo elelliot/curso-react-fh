@@ -21,7 +21,13 @@ interface Props {
   isPending: boolean;
 
   // Methods
-  onSubmit: (productLike: Partial<Product>) => Promise<void>;
+  onSubmit: (
+    productLike: Partial<Product> & { files?: File[] },
+  ) => Promise<void>;
+}
+
+interface FormInputs extends Product {
+  files?: File[];
 }
 
 const availableSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -35,7 +41,6 @@ export const ProductForm = ({
 }: Props) => {
   const labelInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
-  const [files, setFiles] = useState<File[]>([]);
 
   // Form
   const {
@@ -45,13 +50,14 @@ export const ProductForm = ({
     getValues,
     setValue,
     watch,
-  } = useForm({
+  } = useForm<FormInputs>({
     defaultValues: product,
   });
 
   const selectedSizes = watch("sizes");
   const selectedTags = watch("tags");
   const currentStock = watch("stock");
+  const files = watch("files") || []; // En vez de usar un `state`, usare el form
 
   const addTag = () => {
     const newTag = labelInputRef.current!.value;
@@ -100,21 +106,23 @@ export const ProductForm = ({
     e.stopPropagation();
     setDragActive(false);
     const files = e.dataTransfer.files;
-    console.log(files);
 
     if (!files) return;
-    setFiles((prev) => [...prev, ...Array.from(files)]);
+
+    //NOTE: FileList y File[] son diferentes types (no se por que no solo pone `FileList` en el state, btw, ya no usamos state, ahora lo hacemos desde el form)
+
+    const currentFiles = getValues("files") || [];
+    setValue("files", [...currentFiles, ...Array.from(files)]);
   };
 
   //NOTE: Esto solo se ejecuta cuando subimos el archivo haciendo click y seleccionando (osea desde el input)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    console.log(files);
 
     if (!files) return;
 
-    // FileList y File[] son diferentes types (no se por que no solo pone `FileList` en el state)
-    setFiles((prev) => [...prev, ...Array.from(files)]);
+    const currentFiles = getValues("files") || [];
+    setValue("files", [...currentFiles, ...Array.from(files)]);
   };
 
   return (
