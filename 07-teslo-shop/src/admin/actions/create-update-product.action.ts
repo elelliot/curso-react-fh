@@ -32,7 +32,6 @@ export const createUpdateProductAction = async (
 
   // Quitamos URL de la imagen (las que lo tengan)
   const imagesToSave = images.map((image) => {
-    console.log(image);
     if (image.includes("http") || image.includes("https")) {
       return image.split("/").pop() || "";
     }
